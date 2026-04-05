@@ -19,7 +19,7 @@ export type Profile = {
   displayName: string;
   username: string;
   bio: string;
-  /** URL ou emoji como fallback */
+  /** URL ou emoji como fallbasdaack */
   avatar: string;
   avatarInitial: string;
   premium: boolean;
