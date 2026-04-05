@@ -2,12 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, Zap, Volume2, VolumeX } from "lucide-react";
+import { Eye, Zap, Volume2, VolumeX, Crown, ShieldCheck, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
 import type { Profile, SocialLink } from "./page";
 
 const VIDEO_ID = "zeUERsJeWCs";
+const NOISE_TEXTURE =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E";
 
 const fmt = (n: number) =>
   n >= 1_000_000
@@ -65,6 +67,51 @@ function PlatformIcon({ platform, size = 17 }: { platform: string; size?: number
     default:
       return null;
   }
+
+function BackgroundLayers({ preset }: { preset: Profile["bg"] }) {
+  return (
+    <>
+      {/* base dark veil */}
+      <div className="absolute inset-0 pointer-events-none bg-[rgba(0,0,0,0.68)]" />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 120% 90% at 50% 10%, rgba(255,255,255,0.08), transparent 55%), radial-gradient(ellipse 120% 90% at 50% 100%, rgba(0,0,0,0.7), rgba(0,0,0,0.95))",
+          mixBlendMode: "screen",
+          opacity: 0.55,
+        }}
+      />
+
+      {preset === "red-fog" && (
+        <>
+          <div
+            className="absolute -top-16 left-1/2 w-[80vw] h-[80vw] -translate-x-1/2 bg-[radial-gradient(circle,rgba(255,60,60,0.16),transparent_65%)] blur-[120px] opacity-90"
+          />
+          <div
+            className="absolute inset-x-[-10%] top-1/2 h-1/2 bg-gradient-to-b from-transparent via-[rgba(204,17,17,0.1)] to-transparent opacity-50"
+          />
+        </>
+      )}
+
+      {preset === "noise" && (
+        <>
+          <div
+            className="absolute inset-0 opacity-40"
+            style={{
+              backgroundImage: `url(${NOISE_TEXTURE})`,
+              mixBlendMode: "soft-light",
+            }}
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.05),transparent_45%)]" />
+        </>
+      )}
+
+      {preset === "none" && (
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04),transparent_60%)] opacity-70" />
+      )}
+    </>
+  );
 }
 
 // ── Motion variants ────────────────────────────────────────────
@@ -91,8 +138,40 @@ export default function ProfilePage({ profile }: { profile: Profile }) {
     setMuted((m) => !m);
   };
 
+  const badges = [
+    profile.verified && {
+      label: "Verificado",
+      icon: ShieldCheck,
+      tone: "text-white/80",
+      border: "border-white/20",
+    },
+    profile.premium && {
+      label: "Premium vitalício",
+      icon: Crown,
+      tone: "text-[#ffdddd]",
+      border: "border-[rgba(204,17,17,0.4)]",
+    },
+    profile.earlyAdopter && {
+      label: "Early adopter",
+      icon: Sparkles,
+      tone: "text-[#ffc2c2]",
+      border: "border-white/15",
+    },
+  ].filter(Boolean) as {
+    label: string;
+    icon: typeof ShieldCheck;
+    tone: string;
+    border: string;
+  }[];
+
+  const profileStats = [
+    { label: "Views", value: fmt(profile.views), detail: "total", accent: "text-white" },
+    { label: "Status", value: profile.premium ? "Premium" : "Free", detail: profile.verified ? "verificado" : "sem badge", accent: profile.premium ? "text-[#ff5757]" : "text-white/70" },
+    { label: "Convite", value: profile.earlyAdopter ? "Disponível" : "Fechado", detail: profile.earlyAdopter ? "clube interno" : "aguarde invite", accent: profile.earlyAdopter ? "text-[#ffb347]" : "text-white/70" },
+  ];
+
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-black relative overflow-hidden flex flex-col items-center justify-center px-4 sm:px-8">
 
       {/* ── YouTube video — true fullscreen cover ── */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -115,19 +194,7 @@ export default function ProfilePage({ profile }: { profile: Profile }) {
         />
       </div>
 
-      {/* Very dark overlay — mais sombrio */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: "rgba(0,0,0,0.68)" }}
-      />
-      {/* Vinheta nas bordas */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 75% 75% at 50% 50%, transparent 30%, rgba(0,0,0,0.65) 100%)",
-        }}
-      />
+      <BackgroundLayers preset={profile.bg} />
 
       {/* ── Sound toggle ── */}
       <button
@@ -139,13 +206,18 @@ export default function ProfilePage({ profile }: { profile: Profile }) {
       </button>
 
       {/* ── Content ── */}
-      <div className="relative z-10 w-full max-w-[300px] px-4 py-16">
+      <div className="relative z-10 w-full max-w-[420px] py-16">
+        <div className="absolute inset-0 mx-auto h-full w-[90%] max-w-[420px]">
+          <div className="absolute -inset-px rounded-[32px] opacity-60 blur-3xl bg-gradient-to-b from-[#ff4040]/15 via-transparent to-black" />
+        </div>
+
         <motion.div
           variants={container}
           initial="hidden"
           animate="show"
-          className="flex flex-col items-center gap-5"
+          className="relative flex flex-col items-center gap-5 rounded-[28px] border border-white/10 bg-black/45 px-7 py-9 text-center backdrop-blur-[22px] shadow-[0_40px_90px_rgba(0,0,0,0.65)]"
         >
+          <span className="absolute top-5 left-1/2 -translate-x-1/2 h-px w-24 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
           {/* Avatar */}
           <motion.div variants={fadeUp}>
             <div
@@ -179,8 +251,11 @@ export default function ProfilePage({ profile }: { profile: Profile }) {
           </motion.div>
 
           {/* Name + clan tag */}
-          <motion.div variants={fadeUp} className="text-center space-y-2">
-            <h1 className="heading text-[18px] text-white/85 leading-none">{profile.displayName}</h1>
+          <motion.div variants={fadeUp} className="space-y-2">
+            <h1 className="heading text-[20px] sm:text-[22px] text-white/90 leading-none">
+              {profile.displayName}
+            </h1>
+            <p className="text-[11px] font-mono uppercase tracking-[0.5em] text-white/30">@{profile.username}</p>
             {profile.clan && (
               <div className="flex items-center justify-center">
                 <span
@@ -197,11 +272,26 @@ export default function ProfilePage({ profile }: { profile: Profile }) {
             )}
           </motion.div>
 
+          {/* Badges */}
+          {badges.length > 0 && (
+            <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-2">
+              {badges.map((badge) => (
+                <span
+                  key={badge.label}
+                  className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-mono ${badge.tone} ${badge.border}`}
+                >
+                  <badge.icon className="w-3 h-3" />
+                  {badge.label}
+                </span>
+              ))}
+            </motion.div>
+          )}
+
           {/* Bio */}
           {profile.bio && (
             <motion.p
               variants={fadeUp}
-              className="text-[12px] text-white/35 text-center leading-relaxed"
+              className="text-[12px] text-white/50 leading-relaxed"
             >
               {profile.bio}
             </motion.p>
@@ -256,6 +346,25 @@ export default function ProfilePage({ profile }: { profile: Profile }) {
               ))}
             </motion.div>
           )}
+
+          {/* Stats */}
+          <motion.div
+            variants={fadeUp}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full"
+          >
+            {profileStats.map((stat) => (
+              <div
+                key={stat.label}
+                className="rounded-[12px] border border-white/10 bg-white/3 px-4 py-3 text-left"
+              >
+                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/30">
+                  {stat.label}
+                </p>
+                <p className={`text-base font-semibold ${stat.accent}`}>{stat.value}</p>
+                <p className="text-[10px] text-white/35">{stat.detail}</p>
+              </div>
+            ))}
+          </motion.div>
 
           {/* Views + powered by */}
           <motion.div variants={fadeUp} className="flex items-center gap-4 pt-1">

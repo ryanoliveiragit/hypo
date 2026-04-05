@@ -31,7 +31,7 @@ export default function UsernameClaimSection() {
         <div className="flex flex-col sm:flex-row gap-2 max-w-lg">
           <div className="relative flex-1">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555] text-sm font-mono select-none">
-              hypo.to/
+              hypo.lol/
             </span>
             <input
               type="text"
@@ -40,7 +40,7 @@ export default function UsernameClaimSection() {
               onChange={(e) =>
                 setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, ""))
               }
-              className="w-full h-9 bg-black border border-[rgba(255,255,255,0.1)] rounded-[var(--radius)] pl-[72px] pr-9 text-[#c0c0c0] placeholder:text-[#444] text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#cc1111] focus:ring-offset-2 focus:ring-offset-black transition-all"
+              className="w-full h-9 bg-black border border-[rgba(255,255,255,0.1)] rounded-[var(--radius)] pl-[92px] pr-9 text-[#c0c0c0] placeholder:text-[#444] text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#cc1111] focus:ring-offset-2 focus:ring-offset-black transition-all"
             />
             <span className="absolute right-3 top-1/2 -translate-y-1/2">
               {status === "checking" && <Loader2 className="w-3.5 h-3.5 text-[#888] animate-spin" />}
@@ -61,7 +61,7 @@ export default function UsernameClaimSection() {
 
         {status === "ok" && username && (
           <p className="mt-2 text-xs font-mono text-[#ff4444]">
-            hypo.to/{username} está disponível.
+            hypo.lol/{username} está disponível.
           </p>
         )}
         {status === "taken" && (

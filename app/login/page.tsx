@@ -1,30 +1,39 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
-import { Zap, Ticket, Check, X, Loader2, ArrowRight } from "lucide-react";
+import { Zap, User, Lock, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-const VALID = ["HYPO-ALPHA", "HYPO-BETA", "VIP-2024", "EARLY-XYZ"];
-
 export default function LoginPage() {
-  const [invite, setInvite] = useState("");
-  const [status, setStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
+  const [step, setStep] = useState<"username" | "password">("username");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  const usernameReady = username.trim().length >= 3;
+  const passwordReady = password.length >= 6;
 
   useEffect(() => {
-    const raw = invite.trim().toUpperCase();
-    if (raw.length < 4) { setStatus("idle"); return; }
-    setStatus("checking");
-    const t = setTimeout(() => setStatus(VALID.includes(raw) ? "valid" : "invalid"), 600);
-    return () => clearTimeout(t);
-  }, [invite]);
+    if (step === "password") {
+      passwordRef.current?.focus();
+    }
+  }, [step]);
 
-  const handleSubmit = (_: FormData) => {
-    if (status !== "valid") return;
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (step === "username") {
+      if (!usernameReady) return;
+      setStep("password");
+      return;
+    }
+    if (!passwordReady) return;
     setLoading(true);
-    setTimeout(() => setLoading(false), 1500);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1500);
   };
 
   return (
@@ -47,33 +56,43 @@ export default function LoginPage() {
         <p className="label-mono mb-3">Acesso</p>
         <h1 className="heading text-3xl text-[#c0c0c0] mb-2">Bem-vindo de volta.</h1>
         <p className="text-sm text-[#888] mb-8 leading-relaxed">
-          Use seu código de invite para acessar sua conta.
+          Primeiro confirme seu username. Em seguida, informaremos sua senha.
         </p>
 
-        <form action={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="label-mono block">Código de invite</label>
+            <label className="label-mono block">Username</label>
             <div className="relative">
-              <Ticket className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#555]" />
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#555]" />
               <input
                 type="text"
-                placeholder="XXXX-XXXXX"
-                value={invite}
-                onChange={(e) => setInvite(e.target.value.toUpperCase())}
-                required
+                placeholder="hypo.lol/seu-usuario"
+                value={username}
+                onChange={(e) => setUsername(e.target.value.toLowerCase())}
                 autoFocus
-                className="w-full h-9 bg-black border border-[rgba(255,255,255,0.1)] rounded-[var(--radius)] pl-9 pr-9 text-[#c0c0c0] placeholder:text-[#444] font-mono text-sm tracking-widest focus:outline-none focus:ring-2 focus:ring-[#cc1111] focus:ring-offset-2 focus:ring-offset-black transition-all uppercase"
+                className="w-full h-9 bg-black border border-[rgba(255,255,255,0.1)] rounded-[var(--radius)] pl-9 pr-3 text-[#c0c0c0] placeholder:text-[#444] font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#cc1111] focus:ring-offset-2 focus:ring-offset-black transition-all"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                {status === "checking" && <Loader2 className="w-3.5 h-3.5 text-[#888] animate-spin" />}
-                {status === "valid"    && <Check   className="w-3.5 h-3.5 text-[#ff4444]" />}
-                {status === "invalid"  && <X       className="w-3.5 h-3.5 text-[#ff6b6b]" />}
-              </span>
             </div>
-            {status === "invalid" && (
-              <p className="text-xs text-[#ff6b6b] font-mono">Código inválido.</p>
-            )}
+            <p className="text-xs text-[#555] font-mono">Use pelo menos 3 caracteres.</p>
           </div>
+
+          {step === "password" && (
+            <div className="space-y-1.5">
+              <label className="label-mono block">Senha</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#555]" />
+                <input
+                  ref={passwordRef}
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full h-9 bg-black border border-[rgba(255,255,255,0.1)] rounded-[var(--radius)] pl-9 pr-3 text-[#c0c0c0] font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#cc1111] focus:ring-offset-2 focus:ring-offset-black transition-all"
+                />
+              </div>
+              <p className="text-xs text-[#555] font-mono">Digite sua senha secreta.</p>
+            </div>
+          )}
 
           <Button
             type="submit"
@@ -81,9 +100,9 @@ export default function LoginPage() {
             size="lg"
             className="w-full"
             loading={loading}
-            disabled={status !== "valid"}
+            disabled={step === "username" ? !usernameReady : !passwordReady || loading}
           >
-            Entrar
+            {step === "username" ? "Continuar" : "Entrar"}
             <ArrowRight className="w-4 h-4" />
           </Button>
         </form>
@@ -107,22 +126,21 @@ export default function LoginPage() {
         <div className="max-w-xs">
           <div className="card p-5 text-xs font-mono leading-relaxed mb-4">
             <div className="flex items-center gap-1.5 mb-4 pb-3 border-b border-[rgba(255,255,255,0.06)]">
-              <span className="label-mono text-[10px]">INVITE</span>
+              <span className="label-mono text-[10px]">LOGIN</span>
               <span className="ml-auto flex items-center gap-1.5">
                 <span className="status-dot status-dot-green" />
-                <span className="text-[#888] text-[10px]">Valid</span>
+                <span className="text-[#888] text-[10px]">Online</span>
               </span>
             </div>
             <div className="space-y-1 text-[#888]">
-              <div><span className="text-[#555]">code    </span><span className="text-[#c0c0c0]">HYPO-ALPHA</span></div>
-              <div><span className="text-[#555]">user    </span><span className="text-[#e53535]">@demo</span></div>
-              <div><span className="text-[#555]">joined  </span><span className="text-[#888]">2024-01-01</span></div>
-              <div><span className="text-[#555]">status  </span><span className="text-[#ff4444]">active</span></div>
+              <div><span className="text-[#555]">user    </span><span className="text-[#c0c0c0]">@demo</span></div>
+              <div><span className="text-[#555]">device  </span><span className="text-[#e53535]">desktop</span></div>
+              <div><span className="text-[#555]">passkey </span><span className="text-[#888]">••••••••</span></div>
+              <div><span className="text-[#555]">status  </span><span className="text-[#ff4444]">autenticado</span></div>
             </div>
           </div>
           <p className="text-xs text-[#555] leading-relaxed">
-            Seu código de invite é sua chave de acesso.
-            Guarde-o em lugar seguro.
+            Use sua credencial pessoal. Nunca compartilhe sua senha com ninguém.
           </p>
         </div>
       </div>

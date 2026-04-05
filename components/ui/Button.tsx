@@ -1,7 +1,20 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { AnchorHTMLAttributes, ButtonHTMLAttributes, cloneElement, isValidElement } from "react";
+import { AnchorHTMLAttributes, ButtonHTMLAttributes, cloneElement, isValidElement, ReactElement, ElementType } from "react";
+
+type SlotProps = ButtonHTMLAttributes<HTMLElement> & { children?: React.ReactNode };
+
+function Slot({ children, ...slotProps }: SlotProps) {
+  if (!children || !isValidElement(children)) return null;
+  const child = children as ReactElement<{ className?: string }>;
+  const childClass = child.props.className;
+  return cloneElement(child, {
+    ...child.props,
+    ...slotProps,
+    className: cn(slotProps.className, childClass),
+  });
+}
 
 type ButtonBaseProps = {
   variant?: "solid" | "outline" | "ghost" | "danger";
@@ -53,19 +66,13 @@ export default function Button(props: ButtonProps) {
   const { variant = "outline", size = "md", loading, asChild, children, className, ...rest } = props;
   const cls = cn(base, variants[variant], sizes[size], className);
 
-  if (asChild && isValidElement(children)) {
-    const child = children as React.ReactElement<{ className?: string }>;
-    return cloneElement(child, {
-      ...child.props,
-      className: cn(cls, child.props.className),
-    });
-  }
-
+  const Component = (asChild ? Slot : "button") as ElementType;
   const btnProps = rest as ButtonHTMLAttributes<HTMLButtonElement>;
+
   return (
-    <button className={cls} disabled={btnProps.disabled || loading} {...btnProps}>
+    <Component className={cls} disabled={btnProps.disabled || loading} {...btnProps}>
       {loading && <Spinner />}
       {children}
-    </button>
+    </Component>
   );
 }

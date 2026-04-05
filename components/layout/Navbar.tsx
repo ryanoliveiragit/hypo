@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Button from "@/components/ui/Button";
-import { Menu, X, Zap } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import logoAsset from "@/public/logo.png";
 
 const navLinks = [
   { href: "/help",        label: "Docs"    },
@@ -22,11 +24,15 @@ export default function Navbar() {
       <header className="fixed top-0 left-0 right-0 z-50 h-14 glass-nav">
         <div className="max-w-[1100px] mx-auto px-6 h-full flex items-center justify-between">
           {/* Logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 group"
-          >
-            <Zap className="w-4 h-4 text-[#cc1111]" />
+          <Link href="/" className="flex items-center gap-2 group">
+            <Image
+              src={logoAsset}
+              alt="Logo Hypo"
+              width={48}
+              height={48}
+              className="w-12 h-12 object-contain"
+              priority
+            />
             <span
               className="text-sm font-bold text-[#c0c0c0] tracking-tight"
               style={{ fontFamily: "GeistMono, monospace" }}
