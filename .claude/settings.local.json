@@ -1,7 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir=false --import-alias=\"@/*\" --no-git)"
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir=false --import-alias=\"@/*\" --no-git)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npx next:*)",
+      "Bash(find app/ components/ -name '*.tsx' -exec sed -i 's/ease: \"easeOut\"/ease: [0, 0, 0.4, 1] as const/g; s/ease: \"easeInOut\"/ease: [0.4, 0, 0.6, 1] as const/g' '{}' ';')",
+      "Bash(find app/ components/ -name '*.tsx' -name '*.css' -exec sed -i 's/#0070f3/#cc1111/g; s/#3b9eff/#ff4444/g; s/rgba\\(0,112,243/rgba\\(204,17,17/g' '{}' ';')",
+      "Bash(find app/ components/ -name '*.tsx' -exec sed -i 's/#50e3c2/#ff4444/g; s/rgba\\(80,227,194/rgba\\(255,68,68/g; s/text-\\\\[#50e3c2\\\\]/text-[#ff4444]/g' '{}' ';')",
+      "Bash(find app/ components/ -name '*.tsx' -exec sed -i 's/text-\\\\[#0070f3\\\\]/text-[#cc1111]/g;:*)",
+      "Bash(xargs sed:*)",
+      "Bash(node -e ':*)",
+      "Bash(node -e \"require\\('./app/dashboard/premium/page.tsx'\\)\")",
+      "WebFetch(domain:distrokid.com)"
     ]
   }
 }

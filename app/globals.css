@@ -1,26 +1,198 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* ── Hypo dark/sombrio palette ── */
+  --color-background:  oklch(0% 0 0);        /* #000 */
+  --color-surface:     oklch(4.5% 0 0);      /* #0a0a0a */
+  --color-border:      oklch(13% 0 0);       /* #202020 */
+  --color-foreground:  oklch(82% 0 0);       /* #c0c0c0 — slightly dim, não brilhante */
+  --color-muted:       oklch(42% 0 0);       /* #666 */
+  --color-primary:     oklch(44% 0.18 25);   /* #cc1111 — blood red */
+  --color-primary-dim: oklch(36% 0.14 25);   /* #8b0000-ish */
+  --color-error:       oklch(60% 0.22 25);   /* #e53535 */
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "GeistMono", ui-monospace, "Cascadia Code", monospace;
+
+  --radius-sm: 0.125rem; /* 2px — quase sem arredondamento */
+  --radius:    0.25rem;  /* 4px */
+  --radius-lg: 0.375rem; /* 6px */
+
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0);   }
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1;   }
+    50%       { opacity: 0.3; }
+  }
+  @keyframes scan {
+    0%   { transform: translateY(0%);    opacity: 0.06; }
+    50%  { transform: translateY(100vh); opacity: 0.06; }
+    100% { transform: translateY(0%);    opacity: 0;    }
+  }
+
+  --animate-shimmer:   shimmer 2s linear infinite;
+  --animate-fade-in:   fade-in 0.3s ease-out forwards;
+  --animate-pulse-dot: pulse-dot 2.5s ease-in-out infinite;
+  --animate-scan:      scan 8s linear infinite;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background-color: #000;
+    color: #c0c0c0;
+    font-family: "Inter", ui-sans-serif, sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Seleção com red */
+  ::selection {
+    background: rgba(204, 17, 17, 0.3);
+    color: #fff;
+  }
+
+  /* Scrollbar escura e fina */
+  ::-webkit-scrollbar        { width: 3px; height: 3px; }
+  ::-webkit-scrollbar-track  { background: transparent; }
+  ::-webkit-scrollbar-thumb  { background: #1a1a1a; border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: #cc1111; }
+
+  /* Headings em GeistMono */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "GeistMono", ui-monospace, monospace;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    color: #c8c8c8;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+
+  /* Glassmorphism só no nav */
+  .glass-nav {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  /* Card base */
+  .card {
+    background: #080808;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+  }
+  .card-hover {
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .card-hover:hover {
+    border-color: rgba(204, 17, 17, 0.35);
+    transform: translateY(-1px);
+  }
+
+  /* Typography */
+  .heading {
+    font-family: "GeistMono", monospace;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+  }
+  .label-mono {
+    font-family: "GeistMono", monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #555;
+  }
+  .code {
+    font-family: "GeistMono", monospace;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: #c0c0c0;
+  }
+
+  /* Skeleton shimmer */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      rgba(255,255,255,0.03) 25%,
+      rgba(255,255,255,0.06) 50%,
+      rgba(255,255,255,0.03) 75%
+    );
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+    border-radius: var(--radius-sm);
+  }
+
+  /* Status dots */
+  .status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .status-dot-red {
+    background: #cc1111;
+    box-shadow: 0 0 5px rgba(204, 17, 17, 0.7);
+  }
+  .status-dot-green {
+    background: #2a7a2a;
+    box-shadow: 0 0 5px rgba(42, 122, 42, 0.5);
+  }
+  .status-dot-dim {
+    background: #333;
+  }
+  .status-dot-pulse {
+    animation: var(--animate-pulse-dot);
+  }
+
+  /* Hero glow — red, muito sutil */
+  .hero-glow {
+    background: radial-gradient(
+      ellipse 50% 35% at 50% 0%,
+      rgba(204, 17, 17, 0.07),
+      transparent
+    );
+  }
+
+  /* Divider */
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* Scanline effect (decorativo, usado no hero) */
+  .scanline {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(204,17,17,0.15), transparent);
+    animation: var(--animate-scan);
+    pointer-events: none;
+  }
+
+  /* Red accent text */
+  .text-accent { color: #cc1111; }
+  .text-accent-bright { color: #e53535; }
+
+  /* Animate */
+  .animate-fade-in { animation: var(--animate-fade-in); }
 }
