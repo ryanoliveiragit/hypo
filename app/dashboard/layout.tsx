@@ -74,7 +74,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-mono text-[#c0c0c0] truncate">demo_user</p>
-            <p className="text-[10px] text-[#555] truncate">hypo.to/demo_user</p>
+            <p className="text-[10px] text-[#555] truncate">hypo.lol/demo_user</p>
           </div>
           <a
             href="/demo_user"

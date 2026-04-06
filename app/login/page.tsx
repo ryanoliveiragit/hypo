@@ -22,7 +22,7 @@ export default function LoginPage() {
     }
   }, [step]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (step === "username") {
       if (!usernameReady) return;
@@ -31,9 +31,28 @@ export default function LoginPage() {
     }
     if (!passwordReady) return;
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      const res = await fetch("http://localhost:4000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username: username.trim(), password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error === "invalid_credentials" ? "Username ou senha incorretos." : data.error);
+        setLoading(false);
+        return;
+      }
+
+      window.location.href = "/dashboard";
+    } catch {
+      alert("Erro ao conectar ao servidor.");
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (

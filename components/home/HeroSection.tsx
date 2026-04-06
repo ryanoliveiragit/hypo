@@ -127,7 +127,7 @@ export default function HeroSection() {
               <span className="w-2.5 h-2.5 rounded-full bg-[rgba(255,255,255,0.12)]" />
               <span className="w-2.5 h-2.5 rounded-full bg-[rgba(255,255,255,0.12)]" />
               <span className="w-2.5 h-2.5 rounded-full bg-[rgba(255,255,255,0.12)]" />
-              <span className="ml-auto text-[#555] text-[10px]">hypo.to/demo</span>
+              <span className="ml-auto text-[#555] text-[10px]">hypo.lol/demo</span>
             </div>
             <div className="space-y-1 text-[#888]">
               <span className="text-[#555]">{"// "}</span>

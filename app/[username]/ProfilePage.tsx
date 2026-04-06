@@ -67,6 +67,7 @@ function PlatformIcon({ platform, size = 17 }: { platform: string; size?: number
     default:
       return null;
   }
+}
 
 function BackgroundLayers({ preset }: { preset: Profile["bg"] }) {
   return (

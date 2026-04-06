@@ -22,7 +22,7 @@ export default function SettingsPage() {
           <div className="space-y-1.5">
             <label className="label-mono block">Username</label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555] text-sm font-mono select-none">hypo.to/</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555] text-sm font-mono select-none">hypo.lol/</span>
               <input
                 type="text"
                 value={username}

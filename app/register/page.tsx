@@ -48,7 +48,7 @@ function RegisterForm() {
         <h2 className="heading text-3xl text-[#c0c0c0] mb-3">Tudo certo.</h2>
         <p className="text-sm text-[#888] mb-6 leading-relaxed">
           Seu perfil está em{" "}
-          <span className="font-mono text-[#c0c0c0]">hypo.to/{username}</span>.
+          <span className="font-mono text-[#c0c0c0]">hypo.lol/{username}</span>.
         </p>
         <div className="card p-4 mb-6">
           <p className="label-mono text-[10px] mb-2">Código de acesso</p>
@@ -145,7 +145,7 @@ function RegisterForm() {
             <div className="space-y-1.5">
               <label className="label-mono block">Username</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555] text-sm font-mono select-none">hypo.to/</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555] text-sm font-mono select-none">hypo.lol/</span>
                 <input
                   type="text"
                   placeholder="meu-usuario"

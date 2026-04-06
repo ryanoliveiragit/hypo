@@ -6,9 +6,9 @@ import { Upload, Copy, Trash2, Image as Img, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 const mock = [
-  { id: 1, name: "avatar.png",            size: "128 KB", url: "https://hypo.to/i/a1b2c3", date: "2d atrás" },
-  { id: 2, name: "banner.jpg",            size: "340 KB", url: "https://hypo.to/i/d4e5f6", date: "5d atrás" },
-  { id: 3, name: "project-screenshot.png",size: "512 KB", url: "https://hypo.to/i/g7h8i9", date: "1sem atrás" },
+  { id: 1, name: "avatar.png",            size: "128 KB", url: "https://hypo.lol/i/a1b2c3", date: "2d atrás" },
+  { id: 2, name: "banner.jpg",            size: "340 KB", url: "https://hypo.lol/i/d4e5f6", date: "5d atrás" },
+  { id: 3, name: "project-screenshot.png",size: "512 KB", url: "https://hypo.lol/i/g7h8i9", date: "1sem atrás" },
 ];
 
 export default function ImagesPage() {

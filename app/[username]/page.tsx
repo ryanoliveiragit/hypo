@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { Metadata } from "next";
 import ProfilePage from "./ProfilePage";
 
@@ -68,7 +69,7 @@ const profiles: Record<string, Profile> = {
     username:    "demo",
     avatarInitial: "D",
     avatar: "",
-    bio: "perfil de demonstração — crie o seu em hypo.to",
+    bio: "perfil de demonstração — crie o seu em hypo.lol",
     premium: true,
     verified: true,
     earlyAdopter: false,
@@ -105,19 +106,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 // ── Page ───────────────────────────────────────────────────────
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { username } = await params;
-  const profile: Profile = profiles[username] ?? {
-    displayName: username,
-    username,
-    avatarInitial: username[0]?.toUpperCase() ?? "?",
-    avatar: "",
-    bio: `hypo.to/${username}`,
-    premium: false,
-    verified: false,
-    earlyAdopter: false,
-    views: 0,
-    bg: "none",
-    activity: null,
-    links: [],
-  };
+  const profile = profiles[username];
+  if (!profile) redirect("/404");
   return <ProfilePage profile={profile} />;
 }

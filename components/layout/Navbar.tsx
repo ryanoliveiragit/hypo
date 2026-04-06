@@ -61,9 +61,12 @@ export default function Navbar() {
 
           {/* Auth */}
           <div className="hidden md:flex items-center gap-2">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/login">Entrar</Link>
-            </Button>
+            <Link
+              href="/login"
+              className="px-3 py-1.5 text-sm text-[#c0c0c0] border border-[rgba(255,255,255,0.15)] rounded-[var(--radius-sm)] hover:bg-[rgba(255,255,255,0.04)] hover:border-[rgba(255,255,255,0.25)] transition-all duration-150"
+            >
+              Login
+            </Link>
             <Button variant="solid" size="sm" asChild>
               <Link href="/register">Tenho um invite</Link>
             </Button>
@@ -102,8 +105,8 @@ export default function Navbar() {
             ))}
             <hr className="divider my-2" />
             <div className="flex flex-col gap-2 pt-1">
-              <Button variant="ghost" size="sm" className="justify-start" asChild>
-                <Link href="/login" onClick={() => setOpen(false)}>Entrar</Link>
+              <Button variant="outline" size="sm" className="justify-start" asChild>
+                <Link href="/login" onClick={() => setOpen(false)}>Login</Link>
               </Button>
               <Button variant="solid" size="sm" className="justify-start" asChild>
                 <Link href="/register" onClick={() => setOpen(false)}>Tenho um invite</Link>
